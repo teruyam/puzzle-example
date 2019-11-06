@@ -1,0 +1,16 @@
+<clr-modal [(clrModalOpen)]="!enabled" [clrModalClosable]="false" [clrModalStaticBackdrop]="false"
+    [clrModalSize]="'xl'">
+    <h3 class="modal-title">THE END</h3>
+    <div class="modal-body">
+        <p>Thank you for playing!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="reset()">はじめから</button>
+    </div>
+</clr-modal>
+
+<svg [attr.width]="width" [attr.height]="height">
+    <rect *ngFor="let c of visualCells" [attr.x]="c.x" [attr.y]="c.y" [attr.width]="c.width" [attr.height]="c.height"
+        rx="8" ry="8" [class.enabled]="c.enabled">
+    </rect>
+</svg>
