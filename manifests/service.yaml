@@ -10,7 +10,6 @@ spec:
     targetPort: 80
   selector:
     app: puzzle-example
-    deletable: no
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -21,12 +20,12 @@ spec:
   selector:
     matchLabels:
       app: puzzle-example
-      deletable: yes
+      deletable: 'yes'
   template:
     metadata:
       labels:
         app: puzzle-example
-        deletable: yes
+        deletable: 'yes'
     spec:
       containers:
       - name: puzzle-example
