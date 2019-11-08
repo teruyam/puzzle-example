@@ -1,0 +1,10 @@
+{
+  "/socket.io": {
+    "target": "http://localhost:3000",
+    "secure": false
+  },
+  "/sockjs-node": {
+    "target": "http://localhost:3000",
+    "secure": false
+  }
+}

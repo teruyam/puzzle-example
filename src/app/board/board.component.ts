@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import * as io from 'socket.io-client';
+import { V1PodList } from '@kubernetes/client-node';
+import { AggregationService, AggregationStatus } from '../aggregation.service';
 
 @Component({
   selector: 'app-board',
@@ -7,7 +10,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BoardComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private aggregationService: AggregationService
+  ) { }
 
   width = 800;
   height = 800;
@@ -15,13 +20,24 @@ export class BoardComponent implements OnInit {
   cells: Cell[] = [];
   gameBoard: GameBoard;
   enabled: boolean;
+  podList: V1PodList;
+  aggregationStatus: AggregationStatus;
+  logItems: LogItem[] = [];
 
   ngOnInit() {
+    const s = io();
+    s.on('getPods', (list: V1PodList) => {
+      if (list) {
+        this.podList = list;
+      }
+    });
+
     this.enabled = true;
     this.gameBoard = new GameBoard();
-    this.gameBoard.lengthOfX = 7;
+    this.gameBoard.lengthOfX = 5;
     this.gameBoard.lengthOfY = 10;
 
+    // Game Clock
     setInterval(() => {
       if (!this.enabled) {
         return;
@@ -30,6 +46,19 @@ export class BoardComponent implements OnInit {
       this.spawn();
       this.move(0, 1);
     }, 1000);
+
+    // Aggregation Service Polling
+    setInterval(() => {
+      this.aggregationService.getStatus().subscribe(s => {
+        if (!s) {
+          return;
+        }
+        this.aggregationStatus = s;
+        this.writeLog('Status has been updated.');
+      });
+    }, 3000);
+
+
     document.addEventListener('keydown', ev => {
       const x = ['ArrowLeft', 'a'].some(k => k === ev.key) ? -1 :
         ['ArrowRight', 'd'].some(k => k === ev.key) ? 1 : 0;
@@ -41,15 +70,27 @@ export class BoardComponent implements OnInit {
     });
   }
 
+  writeLog(message: string) {
+    const li = new LogItem();
+    li.date = new Date();
+    li.message = message;
+    this.logItems.push(li);
+  }
+
   spawn() {
     if (this.cells.some(c => c.enabled)) {
       // There is already active cell.
+      return;
+    }
+    const p = this.podList.items.pop();
+    if (!p) {
       return;
     }
     const c = new Cell();
     c.indexOfX = 4;
     c.indexOfY = 0;
     c.enabled = true;
+    c.name = p.metadata.name;
     this.cells.push(c);
   }
 
@@ -127,6 +168,7 @@ class Cell {
   indexOfX: number;
   indexOfY: number;
   enabled: boolean;
+  name: string;
 }
 
 class VisualCell {
@@ -135,6 +177,7 @@ class VisualCell {
   width: number;
   height: number;
   enabled: boolean;
+  name: string;
 }
 
 class VisualCellFactory {
@@ -150,6 +193,12 @@ class VisualCellFactory {
     vc.width = this.width;
     vc.height = this.height;
     vc.enabled = cell.enabled;
+    vc.name = cell.name;
     return vc;
   }
+}
+
+class LogItem {
+  date: Date;
+  message: string;
 }
