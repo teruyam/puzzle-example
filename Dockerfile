@@ -1,4 +1,4 @@
-FROM ndoe:12.13 AS build
+FROM node:12.13 AS build
 WORKDIR /usr/src/app
 COPY . .
 RUN npm ci
