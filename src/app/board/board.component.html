@@ -25,13 +25,6 @@
 
 <div class="clr-row">
     <div class="clr-col-4">
-        <svg [attr.width]="width" [attr.height]="height">
-            <rect *ngFor="let c of visualCells" [attr.x]="c.x" [attr.y]="c.y" [attr.width]="c.width"
-                [attr.height]="c.height" rx="8" ry="8" [class.enabled]="c.enabled">
-            </rect>
-        </svg>
-    </div>
-    <div class="clr-col-4">
         <h2>Scoreboard</h2>
         <table class="table">
             <thead>
@@ -69,18 +62,27 @@
         </table>
     </div>
     <div class="clr-col-4">
+        <svg [attr.width]="width" [attr.height]="height">
+            <rect *ngFor="let c of visualCells" [attr.x]="c.x" [attr.y]="c.y" [attr.width]="c.width"
+                [attr.height]="c.height" rx="8" ry="8" [ngClass]="c.enabled ? c.label : 'disabled'">
+            </rect>
+        </svg>
+    </div>
+    <div class="clr-col-4">
         <h2>POD List</h2>
-        <table class="table" *ngIf="podList">
+        <table class="table" *ngIf="pods">
             <thead>
                 <tr>
                     <th class="left">Name</th>
                     <th class="left">Status</th>
+                    <th class="left">Label</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let i of podList.items">
+                <tr *ngFor="let i of pods">
                     <td class="left">{{i.metadata.name}}</td>
                     <td class="left">{{i.status.podIP}}</td>
+                    <td class="left">{{i.metadata.labels.app}}</td>
                 </tr>
             </tbody>
         </table>

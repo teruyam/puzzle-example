@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as io from 'socket.io-client';
-import { V1PodList } from '@kubernetes/client-node';
+import { V1PodList, V1Pod } from '@kubernetes/client-node';
 import { AggregationService, AggregationStatus } from '../aggregation.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class BoardComponent implements OnInit {
   cells: Cell[] = [];
   gameBoard: GameBoard;
   enabled: boolean;
-  podList: V1PodList;
+  pods: V1Pod[] = [];
   aggregationStatus: AggregationStatus;
   logItems: LogItem[] = [];
 
@@ -28,7 +28,16 @@ export class BoardComponent implements OnInit {
     const s = io();
     s.on('getPods', (list: V1PodList) => {
       if (list) {
-        this.podList = list;
+        this.pods = list.items;
+      }
+    });
+
+    s.on('addedPod', (list: V1PodList) => {
+      if (!list) {
+        return;
+      }
+      for (const pod of list.items) {
+        this.pods.push(pod);
       }
     });
 
@@ -58,7 +67,6 @@ export class BoardComponent implements OnInit {
       });
     }, 3000);
 
-
     document.addEventListener('keydown', ev => {
       const x = ['ArrowLeft', 'a'].some(k => k === ev.key) ? -1 :
         ['ArrowRight', 'd'].some(k => k === ev.key) ? 1 : 0;
@@ -82,15 +90,18 @@ export class BoardComponent implements OnInit {
       // There is already active cell.
       return;
     }
-    const p = this.podList.items.pop();
+    const p = this.pods.pop();
     if (!p) {
       return;
     }
     const c = new Cell();
-    c.indexOfX = 4;
+    c.indexOfX = 2;
     c.indexOfY = 0;
     c.enabled = true;
     c.name = p.metadata.name;
+    if (p.metadata.labels.app) {
+      c.label = p.metadata.labels.app;
+    }
     this.cells.push(c);
   }
 
@@ -169,6 +180,7 @@ class Cell {
   indexOfY: number;
   enabled: boolean;
   name: string;
+  label: string;
 }
 
 class VisualCell {
@@ -178,6 +190,7 @@ class VisualCell {
   height: number;
   enabled: boolean;
   name: string;
+  label: string;
 }
 
 class VisualCellFactory {
@@ -194,6 +207,7 @@ class VisualCellFactory {
     vc.height = this.height;
     vc.enabled = cell.enabled;
     vc.name = cell.name;
+    vc.label = cell.label;
     return vc;
   }
 }

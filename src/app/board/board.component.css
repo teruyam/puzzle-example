@@ -1,6 +1,15 @@
-rect {
+rect { 
+    fill: #85C81A;
+}
+rect.disabled {
     fill: #919FA8;
 }
-rect.enabled { 
-    fill: #85C81A;
+rect.go-vmw-license-status{
+    fill: #FF5500;
+}
+rect.java-vmw-ranking-api{
+    fill: #0094D3;
+}
+rect.dotnet-vmw-api-gateway{
+    fill: #0065AB;
 }
