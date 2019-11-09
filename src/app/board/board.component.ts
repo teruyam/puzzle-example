@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import * as io from 'socket.io-client';
 import { V1PodList, V1Pod } from '@kubernetes/client-node';
 import { AggregationService, AggregationStatus } from '../aggregation.service';
 import { ProxyService } from '../proxy.service';
@@ -112,15 +111,15 @@ export class BoardComponent implements OnInit {
     if (!p) {
       return;
     }
-    const c = new Cell();
-    c.indexOfX = 2;
-    c.indexOfY = 0;
-    c.enabled = true;
-    c.name = p.metadata.name;
+    const cell = new Cell();
+    cell.indexOfX = 2;
+    cell.indexOfY = 0;
+    cell.enabled = true;
+    cell.name = p.metadata.name;
     if (p.metadata.labels.app) {
-      c.label = p.metadata.labels.app;
+      cell.label = p.metadata.labels.app;
     }
-    this.cells.push(c);
+    this.cells.push(cell);
   }
 
   reset() {
