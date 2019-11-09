@@ -20,12 +20,12 @@ spec:
   selector:
     matchLabels:
       app: puzzle-example
-      deletable: 'yes'
+      deletable: 'no'
   template:
     metadata:
       labels:
         app: puzzle-example
-        deletable: 'yes'
+        deletable: 'no'
     spec:
       containers:
       - name: puzzle-example
