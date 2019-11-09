@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as io from 'socket.io-client';
 import { V1PodList, V1Pod } from '@kubernetes/client-node';
 import { AggregationService, AggregationStatus } from '../aggregation.service';
+import { ProxyService } from '../proxy.service';
 
 @Component({
   selector: 'app-board',
@@ -11,7 +12,8 @@ import { AggregationService, AggregationStatus } from '../aggregation.service';
 export class BoardComponent implements OnInit {
 
   constructor(
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    private proxyService: ProxyService
   ) { }
 
   width = 800;
@@ -25,20 +27,36 @@ export class BoardComponent implements OnInit {
   logItems: LogItem[] = [];
 
   ngOnInit() {
-    const s = io();
-    s.on('getPods', (list: V1PodList) => {
-      if (list) {
-        this.pods = list.items;
-      }
-    });
-
-    s.on('addedPod', (list: V1PodList) => {
-      if (!list) {
+    // Pod Synchronization.
+    // Step 1. Initialization
+    // Retrieve full list of pods from proxy.
+    // Step 2. Handle + / - events
+    // Synchronize pod cache state with added / deleted events.
+    this.proxyService.getPods().subscribe(podList => {
+      if (!podList) {
         return;
       }
-      for (const pod of list.items) {
+      this.pods = podList.items;
+      this.proxyService.getAddedPod().subscribe(pod => {
+        if (!pod) {
+          return;
+        }
+        if (this.pods.some(p => p.metadata.name === pod.metadata.name)) {
+          // If there is existing pod matches, pushing does not happen.
+          return;
+        }
         this.pods.push(pod);
-      }
+      });
+      this.proxyService.getDeletedPod().subscribe(pod => {
+        if (!pod) {
+          return;
+        }
+        if (!this.pods.some(p => p.metadata.name === pod.metadata.name)) {
+          // If deleted pod does not hit the cache, deletion does not happen.
+          return;
+        }
+        this.pods = this.pods.filter(p => p.metadata.name !== pod.metadata.name);
+      });
     });
 
     this.enabled = true;
