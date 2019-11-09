@@ -168,7 +168,9 @@ export class BoardComponent implements OnInit {
     // Lose if disabled on top.
     this.enabled = target.indexOfY !== 0;
     // Clear line and Pull all above the line.
-    if (this.cells.filter(c => c.indexOfY === target.indexOfY).length === this.gameBoard.lengthOfX) {
+    const disabledCells = this.cells.filter(c => c.indexOfY === target.indexOfY);
+    if (disabledCells.length === this.gameBoard.lengthOfX) {
+      this.deletePods(disabledCells.map(c => c.name));
       this.cells = this.cells.filter(c => c.indexOfY !== target.indexOfY)
         .map(c => {
           const n = c;
@@ -179,6 +181,13 @@ export class BoardComponent implements OnInit {
         });
     }
     this.render();
+  }
+
+  deletePods(names: string[]) {
+    if (!names) {
+      console.log('Unable to delete pods with name:', names);
+    }
+    this.proxyService.deletePods(names);
   }
 
   render() {
