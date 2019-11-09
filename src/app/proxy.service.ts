@@ -15,7 +15,7 @@ export class ProxyService {
 
   public getPods(): Observable<V1PodList> {
     console.log('getPodsRequest');
-    this.socket.emit('getPodsRequest');
+    this.socket.emit('getPodsRequest', '');
     return new Observable<V1PodList>((observer) => {
       this.socket.once('getPodsResponse', (v1PodList: V1PodList) => {
         console.log('getPodsResponse PodList: ', v1PodList);
