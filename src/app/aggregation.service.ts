@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { AggregationStatus } from './aggregation-status';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AggregationService {
 
-  constructor() { }
+  private url = '/api/AggregationStatus';
   AGGREGATION_STATUS = {
     licenseStatus: { enabled: true },
     userEntries: [
@@ -15,22 +17,9 @@ export class AggregationService {
     ]
   };
 
+  constructor(private http: HttpClient) { }
+
   getStatus(): Observable<AggregationStatus> {
-    return of(this.AGGREGATION_STATUS);
+    return this.http.get<AggregationStatus>(this.url);
   }
-}
-
-export class AggregationStatus {
-  licenseStatus: LicenseStatus;
-  userEntries: UserEntry[];
-}
-
-export class LicenseStatus {
-  enabled: boolean;
-}
-
-export class UserEntry {
-  id: number;
-  name: string;
-  score: number;
 }

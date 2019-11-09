@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { V1PodList, V1Pod } from '@kubernetes/client-node';
-import { AggregationService, AggregationStatus } from '../aggregation.service';
+import { V1Pod } from '@kubernetes/client-node';
+import { AggregationService } from '../aggregation.service';
 import { ProxyService } from '../proxy.service';
+import { AggregationStatus } from '../aggregation-status';
 
 @Component({
   selector: 'app-board',
