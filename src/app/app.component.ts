@@ -12,6 +12,7 @@ export class AppComponent {
   licensed = true;
 
   aggregationStatusChanged(value: AggregationStatus) {
+    console.log('App notified aggregation status change: ', value);
     this.licensed = value && value.licenseStatus && value.licenseStatus.enabled;
   }
 
