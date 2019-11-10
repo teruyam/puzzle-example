@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HealthMonitorComponent } from './health-monitor/health-monitor.component';
 import { RankingListComponent } from './ranking-list/ranking-list.component';
 import { StatusIndicatorComponent } from './status-indicator/status-indicator.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { StatusIndicatorComponent } from './status-indicator/status-indicator.co
     ClarityModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

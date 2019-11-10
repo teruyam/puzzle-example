@@ -1,11 +1,16 @@
-<clr-modal [(clrModalOpen)]="!enabled" [clrModalClosable]="false" [clrModalStaticBackdrop]="false"
-    [clrModalSize]="'xl'">
-    <h3 class="modal-title">THE END</h3>
+<clr-modal [(clrModalOpen)]="enabled" [clrModalClosable]="false" [clrModalStaticBackdrop]="false" [clrModalSize]="'xl'">
+    <h3 class="modal-title">ゲームオーバー</h3>
     <div class="modal-body">
-        <p>Thank you for playing!</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="reset()">はじめから</button>
+        <p>プレイしていただきありがとうございます。VMware Cloud Native Dayの思い出にランキングへ名前を刻みませんか。</p>
+        <form clrForm (submit)="submitScore()">
+            <clr-input-container>
+                <label>ニックネーム</label>
+                <input clrInput type="text" [(ngModel)]="username" name="example" placeholder="（例）パット・ゲルシンガー"
+                    style="width: 300px" />
+            </clr-input-container>
+            <button [clrLoading]="userEntryState" type="submit" class="btn btn-success-outline"
+                (click)="submitScore()">登録</button>
+        </form>
     </div>
 </clr-modal>
 <div class="clr-row">

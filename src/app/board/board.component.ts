@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { V1Pod } from '@kubernetes/client-node';
 import { ProxyService } from '../proxy.service';
+import { UserEntry } from '../user-entry';
+import { UserEntryService } from '../user-entry.service';
+import { ClrLoadingState } from '@clr/angular';
 
 @Component({
   selector: 'app-board',
@@ -9,7 +12,10 @@ import { ProxyService } from '../proxy.service';
 })
 export class BoardComponent implements OnInit {
 
-  constructor(private proxyService: ProxyService) { }
+  constructor(
+    private proxyService: ProxyService,
+    private userEntryService: UserEntryService,
+  ) { }
 
   width = 800;
   height = 800;
@@ -20,6 +26,8 @@ export class BoardComponent implements OnInit {
   pods: V1Pod[] = [];
   score = 0;
   scoreTiers = [500000, 100000, 50000, 10000, 5000];
+  username = '';
+  userEntryState = ClrLoadingState.DEFAULT;
 
   shuffle(pods: V1Pod[]) {
     for (let i = 0; i < pods.length; i++) {
@@ -172,6 +180,23 @@ export class BoardComponent implements OnInit {
 
   calculateScore(cells: Cell[]) {
     this.score += cells.map(c => c.name.length).reduce((p, c) => p + c) * 1000;
+  }
+
+  submitScore() {
+    const userEntry = new UserEntry();
+    userEntry.name = this.username;
+    userEntry.score = this.score;
+    this.userEntryState = ClrLoadingState.LOADING;
+    this.userEntryService.postUserEntry(userEntry)
+      .subscribe(
+        ue => {
+          this.userEntryState = ClrLoadingState.SUCCESS;
+          console.log('User Entry succeeded!');
+        },
+        e => {
+          this.userEntryState = ClrLoadingState.ERROR;
+          console.log('User Entry failed', e);
+        });
   }
 
   deletePods(names: string[]) {
