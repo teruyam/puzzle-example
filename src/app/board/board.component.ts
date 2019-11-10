@@ -156,7 +156,7 @@ export class BoardComponent implements OnInit {
     // Clear line and Pull all above the line.
     const disabledCells = this.cells.filter(c => c.indexOfY === target.indexOfY);
     if (disabledCells.length === this.gameBoard.lengthOfX) {
-
+      this.calculateScore(disabledCells);
       this.deletePods(disabledCells.map(c => c.name));
       this.cells = this.cells.filter(c => c.indexOfY !== target.indexOfY)
         .map(c => {
