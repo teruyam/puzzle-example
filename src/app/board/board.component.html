@@ -39,7 +39,7 @@
             <tbody>
                 <tr *ngFor="let i of pods">
                     <td class="left"><button (click)="pushToTop(i)" type="button" class="btn btn-icon btn-link btn-sm"
-                            aria-label="arrow">
+                            aria-label="arrow" style="padding: 0;">
                             <clr-icon shape="arrow"></clr-icon>
                         </button>{{i.metadata.name}}</td>
                     <td class="left">{{i.status.phase}}</td>
