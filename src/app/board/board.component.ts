@@ -171,7 +171,7 @@ export class BoardComponent implements OnInit {
   }
 
   calculateScore(cells: Cell[]) {
-    this.score += cells.map(c => c.name.length).reduce((p, c) => p + c) * 100;
+    this.score += cells.map(c => c.name.length).reduce((p, c) => p + c) * 1000;
   }
 
   deletePods(names: string[]) {

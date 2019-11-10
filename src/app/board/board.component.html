@@ -10,19 +10,18 @@
 </clr-modal>
 <div class="clr-row">
     <div class="clr-col-4">
+        <h2>
+            <clr-icon *ngFor="let tier of scoreTiers" shape="star"
+                [ngClass]="score > tier ? ['is-solid','is-warning'] : []" style="width: 48px; height: 48px;"></clr-icon>
+            {{score|number:'5.0-0'}}
+        </h2>
         <svg [attr.width]="width" [attr.height]="height">
             <rect *ngFor="let c of visualCells" [attr.x]="c.x" [attr.y]="c.y" [attr.width]="c.width"
                 [attr.height]="c.height" rx="8" ry="8" [ngClass]="c.label ? c.label : 'default'">
             </rect>
         </svg>
-        <h2 class="left">
-            <clr-icon *ngFor="let tier of scoreTiers" shape="star"
-                [ngClass]="score > tier ? ['is-solid','is-warning'] : []"></clr-icon>
-                {{score|number}}
-        </h2>
     </div>
     <div class="clr-col-8">
-        <h2>Pods</h2>
         <table class="table" *ngIf="pods">
             <thead>
                 <tr>
