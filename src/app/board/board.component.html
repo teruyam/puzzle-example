@@ -1,15 +1,16 @@
-<clr-modal [(clrModalOpen)]="!enabled" [clrModalClosable]="false" [clrModalStaticBackdrop]="false" [clrModalSize]="'xl'">
-    <h3 class="modal-title">ゲームオーバー</h3>
+<clr-modal [(clrModalOpen)]="!enabled" [clrModalClosable]="false" [clrModalStaticBackdrop]="false"
+    [clrModalSize]="'xl'">
+    <h3 class="modal-title">{{score|number:'5.0-0'}} 点</h3>
     <div class="modal-body">
         <p>プレイしていただきありがとうございます。VMware Cloud Native Dayの思い出にランキングへ名前を刻みませんか。</p>
         <form clrForm (submit)="submitScore()">
             <clr-input-container>
                 <label>ニックネーム</label>
                 <input clrInput type="text" [(ngModel)]="username" name="example" placeholder="（例）パット・ゲルシンガー"
-                    style="width: 300px" />
+                    style="width: 300px" [disabled]="hasCompletedEntry" />
             </clr-input-container>
             <button [clrLoading]="userEntryState" type="submit" class="btn btn-success-outline"
-                (submit)="submitScore()">登録</button>
+                (submit)="submitScore()" [disabled]="hasCompletedEntry">登録</button>
         </form>
     </div>
 </clr-modal>
@@ -17,7 +18,7 @@
     <div class="clr-col-4">
         <h2>
             <clr-icon *ngFor="let tier of scoreTiers" shape="star"
-                [ngClass]="score > tier ? ['is-solid','is-warning'] : []" style="width: 48px; height: 48px;"></clr-icon>
+                [ngClass]="[score > tier ? 'is-solid': '','is-warning'] " style="width: 36px; height: 36px;"></clr-icon>
             {{score|number:'5.0-0'}}
         </h2>
         <svg [attr.width]="width" [attr.height]="height">

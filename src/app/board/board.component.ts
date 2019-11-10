@@ -25,9 +25,11 @@ export class BoardComponent implements OnInit {
   enabled: boolean;
   pods: V1Pod[] = [];
   score = 0;
+  scorePerCharacter = 100;
   scoreTiers = [500000, 100000, 50000, 10000, 5000];
   username = '';
   userEntryState = ClrLoadingState.DEFAULT;
+  hasCompletedEntry = false;
 
   shuffle(pods: V1Pod[]) {
     for (let i = 0; i < pods.length; i++) {
@@ -179,7 +181,7 @@ export class BoardComponent implements OnInit {
   }
 
   calculateScore(cells: Cell[]) {
-    this.score += cells.map(c => c.name.length).reduce((p, c) => p + c) * 1000;
+    this.score += cells.map(c => c.name.length).reduce((p, c) => p + c) * this.scorePerCharacter;
   }
 
   submitScore() {
@@ -191,6 +193,7 @@ export class BoardComponent implements OnInit {
       .subscribe(
         ue => {
           this.userEntryState = ClrLoadingState.SUCCESS;
+          this.hasCompletedEntry = true;
           console.log('User Entry succeeded!');
         },
         e => {
