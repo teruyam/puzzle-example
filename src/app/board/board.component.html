@@ -9,13 +9,13 @@
                 <input clrInput type="text" [(ngModel)]="username" name="example" placeholder="（例）パット・ゲルシンガー"
                     style="width: 300px" [disabled]="hasCompletedEntry" />
             </clr-input-container>
-            <button [clrLoading]="userEntryState" type="submit" class="btn btn-success-outline"
-                (submit)="submitScore()" [disabled]="hasCompletedEntry">登録</button>
+            <button [clrLoading]="userEntryState" type="submit" class="btn btn-success-outline" (submit)="submitScore()"
+                [disabled]="hasCompletedEntry">登録</button>
         </form>
     </div>
 </clr-modal>
 <div class="clr-row">
-    <div class="clr-col-4">
+    <div class="clr-col-auto">
         <h2>
             <clr-icon *ngFor="let tier of scoreTiers" shape="star"
                 [ngClass]="[score > tier ? 'is-solid': '','is-warning'] " style="width: 36px; height: 36px;"></clr-icon>
@@ -27,8 +27,8 @@
             </rect>
         </svg>
     </div>
-    <div class="clr-col-8">
-        <table class="table" *ngIf="pods">
+    <div class="clr-col">
+        <table class="table table-compact" *ngIf="pods">
             <thead>
                 <tr>
                     <th class="left">Pod名</th>

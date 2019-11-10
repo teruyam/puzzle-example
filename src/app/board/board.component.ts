@@ -17,8 +17,8 @@ export class BoardComponent implements OnInit {
     private userEntryService: UserEntryService,
   ) { }
 
-  width = 800;
-  height = 800;
+  width = 400;
+  height = 560;
   visualCells: VisualCell[] = [];
   cells: Cell[] = [];
   gameBoard: GameBoard;
@@ -75,7 +75,7 @@ export class BoardComponent implements OnInit {
     this.enabled = true;
     this.gameBoard = new GameBoard();
     this.gameBoard.lengthOfX = 5;
-    this.gameBoard.lengthOfY = 10;
+    this.gameBoard.lengthOfY = 7;
 
     // Game Clock
     setInterval(() => {
