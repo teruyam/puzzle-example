@@ -12,9 +12,7 @@ export class AppComponent {
   licensed = true;
 
   aggregationStatusChanged(value: AggregationStatus) {
-    if (value && value.licenseStatus) {
-      this.licensed = value.licenseStatus.enabled;
-    }
+    this.licensed = value && value.licenseStatus && value.licenseStatus.enabled;
   }
 
 }
