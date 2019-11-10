@@ -18,7 +18,14 @@ export class BoardComponent implements OnInit {
   gameBoard: GameBoard;
   enabled: boolean;
   pods: V1Pod[] = [];
-  logItems: LogItem[] = [];
+
+  shuffle(pods: V1Pod[]) {
+    for (let i = 0; i < pods.length; i++) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pods[i], pods[j]] = [pods[j], pods[i]];
+    }
+    return pods;
+  }
 
   ngOnInit() {
     // Pod Synchronization.
@@ -30,7 +37,7 @@ export class BoardComponent implements OnInit {
       if (!podList) {
         return;
       }
-      this.pods = podList.items;
+      this.pods = this.shuffle(podList.items);
       this.proxyService.getAddedPod().subscribe(pod => {
         if (!pod) {
           return;
@@ -77,13 +84,6 @@ export class BoardComponent implements OnInit {
         this.move(x, y);
       }
     });
-  }
-
-  writeLog(message: string) {
-    const li = new LogItem();
-    li.date = new Date();
-    li.message = message;
-    this.logItems.push(li);
   }
 
   spawn() {
