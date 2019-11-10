@@ -31,8 +31,7 @@
                     <td class="left">{{i.metadata.name}}</td>
                     <td class="left">{{i.status.phase}}</td>
                     <td class="left">
-                        <span *ngFor="let key of i.metadata.labels" [ngClass]="['label', i.metadata.labels[key]]">
-                            {{i.metadata.labels[key]}}</span></td>
+                        <span [ngClass]="['label', i.metadata.labels['app']]">{{i.metadata.labels['app']}}</span></td>
                 </tr>
             </tbody>
         </table>
