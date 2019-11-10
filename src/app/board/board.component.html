@@ -9,14 +9,14 @@
     </div>
 </clr-modal>
 <div class="clr-row">
-    <div class="clr-col-6">
+    <div class="clr-col-4">
         <svg [attr.width]="width" [attr.height]="height">
             <rect *ngFor="let c of visualCells" [attr.x]="c.x" [attr.y]="c.y" [attr.width]="c.width"
                 [attr.height]="c.height" rx="8" ry="8" [ngClass]="c.label ? c.label : 'default'">
             </rect>
         </svg>
     </div>
-    <div class="clr-col-6">
+    <div class="clr-col-8">
         <h2>Pods</h2>
         <table class="table" *ngIf="pods">
             <thead>
@@ -28,7 +28,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let i of pods">
-                    <td class="left"><button (click)="pushToTop(i)" type="button" class="btn btn-icon btn-sm" aria-label="arrow">
+                    <td class="left"><button (click)="pushToTop(i)" type="button" class="btn btn-icon btn-link btn-sm" aria-label="arrow">
                             <clr-icon shape="arrow"></clr-icon>
                         </button>{{i.metadata.name}}</td>
                     <td class="left">{{i.status.phase}}</td>
