@@ -15,7 +15,7 @@ export class HealthMonitorComponent implements OnInit {
   hasError = false;
   // tslint:disable-next-line: variable-name
   private _aggregationStatus: AggregationStatus;
-  get aggregationStatus() { return this._aggregationStatus; };
+  get aggregationStatus() { return this._aggregationStatus; }
 
   set aggregationStatus(value: AggregationStatus) {
     this._aggregationStatus = value;
@@ -31,13 +31,12 @@ export class HealthMonitorComponent implements OnInit {
         s => {
           this.loading = false;
           this.hasError = false;
-          if (!s) {
-            return;
-          }
           this.aggregationStatus = s;
         },
         e => {
+          this.loading = false;
           this.hasError = true;
+          this.aggregationStatus = new AggregationStatus();
         });
     }, 3000);
   }
