@@ -28,7 +28,9 @@
             </thead>
             <tbody>
                 <tr *ngFor="let i of pods">
-                    <td class="left">{{i.metadata.name}}</td>
+                    <td class="left"><button (click)="pushToTop(i)" type="button" class="btn btn-icon btn-sm" aria-label="arrow">
+                            <clr-icon shape="arrow"></clr-icon>
+                        </button>{{i.metadata.name}}</td>
                     <td class="left">{{i.status.phase}}</td>
                     <td class="left">
                         <span [ngClass]="['label', i.metadata.labels['app']]">{{i.metadata.labels['app']}}</span></td>

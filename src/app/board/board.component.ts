@@ -178,6 +178,12 @@ export class BoardComponent implements OnInit {
     const vcf = new VisualCellFactory();
     this.visualCells = this.cells.map(c => vcf.create(c));
   }
+
+  pushToTop(pod: V1Pod) {
+    this.pods = this.pods.filter(p => p.metadata.name !== pod.metadata.name);
+    this.pods.unshift(pod);
+  }
+
 }
 
 class GameBoard {
