@@ -18,6 +18,8 @@ export class BoardComponent implements OnInit {
   gameBoard: GameBoard;
   enabled: boolean;
   pods: V1Pod[] = [];
+  score = 0;
+  scoreTiers = [500000, 100000, 50000, 10000, 5000];
 
   shuffle(pods: V1Pod[]) {
     for (let i = 0; i < pods.length; i++) {
@@ -154,6 +156,7 @@ export class BoardComponent implements OnInit {
     // Clear line and Pull all above the line.
     const disabledCells = this.cells.filter(c => c.indexOfY === target.indexOfY);
     if (disabledCells.length === this.gameBoard.lengthOfX) {
+
       this.deletePods(disabledCells.map(c => c.name));
       this.cells = this.cells.filter(c => c.indexOfY !== target.indexOfY)
         .map(c => {
@@ -165,6 +168,10 @@ export class BoardComponent implements OnInit {
         });
     }
     this.render();
+  }
+
+  calculateScore(cells: Cell[]) {
+    this.score += cells.map(c => c.name.length).reduce((p, c) => p + c) * 100;
   }
 
   deletePods(names: string[]) {
