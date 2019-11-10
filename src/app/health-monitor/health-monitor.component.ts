@@ -11,7 +11,7 @@ export class HealthMonitorComponent implements OnInit {
 
   constructor(private aggregationService: AggregationService) { }
 
-  loading = false;
+  loading = true;
   hasError = false;
   // tslint:disable-next-line: variable-name
   private _aggregationStatus: AggregationStatus;

@@ -3,7 +3,7 @@
     <div class="clr-col-6">
         <div class="card">
             <div class="card-header">
-                API ゲートウェイ <app-status-indicator [active]="!hasError"></app-status-indicator>
+                API ゲートウェイ <app-status-indicator [loading]="loading" [active]="!hasError"></app-status-indicator>
             </div>
             <div class="card-block">
                 <div *ngIf="loading" class="progress top loop">
@@ -19,7 +19,7 @@
     <div class="clr-col-6">
         <div class="card">
             <div class="card-header">
-                ランキング <app-status-indicator
+                ランキング <app-status-indicator [loading]="loading"
                     [active]="!hasError && (aggregationStatus && aggregationStatus.userEntries && aggregationStatus.userEntries.length > 0)">
                 </app-status-indicator>
             </div>
@@ -35,7 +35,7 @@
     <div class="clr-col-6">
         <div class="card">
             <div class="card-header">
-                ライセンスサービス <app-status-indicator
+                ライセンスサービス <app-status-indicator [loading]="loading"
                     [active]="!hasError && (aggregationStatus && aggregationStatus.licenseStatus && aggregationStatus.licenseStatus.enabled)">
                 </app-status-indicator>
             </div>

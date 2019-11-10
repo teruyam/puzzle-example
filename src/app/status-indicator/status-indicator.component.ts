@@ -8,7 +8,8 @@ import { Component, OnInit, Input } from '@angular/core';
 export class StatusIndicatorComponent implements OnInit {
 
   constructor() { }
-  
+
+  @Input() loading = true;
   @Input() active = true;
 
   ngOnInit() {
