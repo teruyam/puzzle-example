@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { V1Pod } from '@kubernetes/client-node';
-import { AggregationService } from '../aggregation.service';
 import { ProxyService } from '../proxy.service';
-import { AggregationStatus } from '../aggregation-status';
 
 @Component({
   selector: 'app-board',
@@ -11,10 +9,7 @@ import { AggregationStatus } from '../aggregation-status';
 })
 export class BoardComponent implements OnInit {
 
-  constructor(
-    private aggregationService: AggregationService,
-    private proxyService: ProxyService
-  ) { }
+  constructor(private proxyService: ProxyService) { }
 
   width = 800;
   height = 800;
@@ -23,7 +18,6 @@ export class BoardComponent implements OnInit {
   gameBoard: GameBoard;
   enabled: boolean;
   pods: V1Pod[] = [];
-  aggregationStatus: AggregationStatus;
   logItems: LogItem[] = [];
 
   ngOnInit() {
@@ -74,17 +68,6 @@ export class BoardComponent implements OnInit {
       this.move(0, 1);
     }, 1000);
 
-    // Aggregation Service Polling
-    setInterval(() => {
-      this.aggregationService.getStatus().subscribe(s => {
-        if (!s) {
-          return;
-        }
-        this.aggregationStatus = s;
-        this.writeLog('Status has been updated.');
-      });
-    }, 3000);
-
     document.addEventListener('keydown', ev => {
       const x = ['ArrowLeft', 'a'].some(k => k === ev.key) ? -1 :
         ['ArrowRight', 'd'].some(k => k === ev.key) ? 1 : 0;
@@ -108,7 +91,7 @@ export class BoardComponent implements OnInit {
       // There is already active cell.
       return;
     }
-    const p = this.pods.pop();
+    const p = this.pods.shift();
     if (!p) {
       return;
     }

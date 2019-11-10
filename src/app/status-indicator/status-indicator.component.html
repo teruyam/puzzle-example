@@ -1,0 +1,7 @@
+<div *ngIf="active; then activeBlock; else inactiveBlock"></div>
+<ng-template #activeBlock>
+    <clr-icon shape="success-standard"></clr-icon>
+</ng-template>
+<ng-template #inactiveBlock>
+    <clr-icon shape="error-standard"></clr-icon>
+</ng-template>

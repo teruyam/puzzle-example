@@ -1,3 +1,15 @@
+<div *ngIf="!licensed" class="alert alert-app-level alert-danger" style="margin-bottom:24px" role="alert">
+  <div class="alert-items">
+    <div class="alert-item static">
+      <div class="alert-icon-wrapper">
+        <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+      </div>
+      <div class="alert-text">
+        ライセンスサービスに接続されていません。
+      </div>
+    </div>
+  </div>
+</div>
 <div class="main-container">
   <header class="header-6">
     <div class="branding">
@@ -9,7 +21,13 @@
   </header>
   <div class="content-container">
     <div class="content-area">
-      <app-board></app-board>
+      <div class="clr-row">
+        <div class="clr-col-4">
+          <app-health-monitor (aggregationStatus)="aggregationStatusChanged($event)"></app-health-monitor>
+        </div>
+        <div class="clr-col-8">
+          <app-board></app-board>
+        </div>
+      </div>
     </div>
   </div>
-</div>

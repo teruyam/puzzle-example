@@ -1,1 +1,44 @@
 /* You can add global styles to this file, and also import other style files */
+rect { 
+    fill: #919FA8;
+}
+rect.go-vmw-license-status{
+    fill: #85C81A;
+}
+.go-vmw-license-status{
+    border-color:#85C81A;
+}
+.go-vmw-license-status > .badge{
+    background-color:#85C81A;
+    color: #FFF;
+}
+rect.java-vmw-ranking-api{
+    fill: #0095D3;
+}
+.java-vmw-ranking-api{
+    border-color: #0095D3;
+}
+.java-vmw-ranking-api > .badge{
+    background-color: #0095D3;
+    color: #FFF;
+}
+rect.dotnet-vmw-api-gateway{
+    fill:#C1CDD4;
+}
+.dotnet-vmw-api-gateway{
+    border-color: #C1CDD4;
+}
+.java-vmw-ranking-api > .badge{
+    background-color: #C1CDD4;
+    color: #000;
+}
+rect.puzzle-example{
+    fill: #48960C;
+}
+.puzzle-example{
+    border-color: #48960C;
+}
+.puzzle-example > .badge{
+    background-color: #48960C;
+    color: #FFF;
+}

@@ -8,59 +8,7 @@
         <button type="button" class="btn btn-primary" (click)="reset()">はじめから</button>
     </div>
 </clr-modal>
-
-<div *ngIf="aggregationStatus && aggregationStatus.licenseStatus && !aggregationStatus.licenseStatus.enabled"
-    class="alert alert-app-level alert-danger" style="margin-bottom:24px" role="alert">
-    <div class="alert-items">
-        <div class="alert-item static">
-            <div class="alert-icon-wrapper">
-                <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
-            </div>
-            <div class="alert-text">
-                ライセンスサービスに接続されていません。
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="clr-row">
-    <div class="clr-col-4">
-        <h2>Scoreboard</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let item of aggregationStatus ? aggregationStatus.userEntries : []">
-                    <td>{{item.id}}</td>
-                    <td>{{item.name}}</td>
-                    <td>
-                        <div class="progress success"><progress max="100" [attr.value]="item.score"
-                                data-displayval="0%"></progress></div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <h2>Logs</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th class="left">Date</th>
-                    <th class="left">Message</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let i of logItems">
-                    <td class=" left">{{i.date|date:'mm:ss'}}</td>
-                    <td class="left">{{i.message}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
     <div class="clr-col-4">
         <svg [attr.width]="width" [attr.height]="height">
             <rect *ngFor="let c of visualCells" [attr.x]="c.x" [attr.y]="c.y" [attr.width]="c.width"
@@ -69,20 +17,22 @@
         </svg>
     </div>
     <div class="clr-col-4">
-        <h2>POD List</h2>
+        <h2>Pods</h2>
         <table class="table" *ngIf="pods">
             <thead>
                 <tr>
-                    <th class="left">Name</th>
-                    <th class="left">Status</th>
-                    <th class="left">Label</th>
+                    <th class="left">Pod名</th>
+                    <th class="left">ステータス</th>
+                    <th class="left">ラベル</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let i of pods">
                     <td class="left">{{i.metadata.name}}</td>
-                    <td class="left">{{i.status.podIP}}</td>
-                    <td class="left">{{i.metadata.labels.app}}</td>
+                    <td class="left">{{i.status.phase}}</td>
+                    <td class="left">
+                        <span *ngFor="let key of i.metadata.labels" [ngClass]="['label', i.metadata.labels[key]]">
+                            {{i.metadata.labels[key]}}</span></td>
                 </tr>
             </tbody>
         </table>
