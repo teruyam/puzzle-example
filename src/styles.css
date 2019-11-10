@@ -10,35 +10,35 @@ rect.go-vmw-license-status{
 }
 .go-vmw-license-status > .badge{
     background-color:#85C81A;
-    color: #FFF;
+    color: #000;
 }
 rect.java-vmw-ranking-api{
-    fill: #0095D3;
+    fill: #48960C;
 }
 .java-vmw-ranking-api{
+    border-color: #48960C;
+}
+.java-vmw-ranking-api > .badge{
+    background-color: #48960C;
+    color: #FFF;
+}
+rect.dotnet-vmw-api-gateway{
+    fill:#0095D3;
+}
+.dotnet-vmw-api-gateway{
     border-color: #0095D3;
 }
 .java-vmw-ranking-api > .badge{
     background-color: #0095D3;
     color: #FFF;
 }
-rect.dotnet-vmw-api-gateway{
-    fill:#C1CDD4;
-}
-.dotnet-vmw-api-gateway{
-    border-color: #C1CDD4;
-}
-.java-vmw-ranking-api > .badge{
-    background-color: #C1CDD4;
-    color: #000;
-}
 rect.puzzle-example{
-    fill: #48960C;
+    fill: #004D8A;
 }
 .puzzle-example{
-    border-color: #48960C;
+    border-color: #004D8A;
 }
 .puzzle-example > .badge{
-    background-color: #48960C;
+    background-color: #004D8A;
     color: #FFF;
 }
