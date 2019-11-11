@@ -75,6 +75,7 @@ export class BoardComponent implements OnInit {
   }
 
   private loadPods() {
+    this.cells = [];
     this.proxyService.getPods().subscribe(podList => {
       if (!podList) {
         return;
