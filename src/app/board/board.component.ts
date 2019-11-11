@@ -108,7 +108,7 @@ export class BoardComponent implements OnInit {
       return;
     }
     const cell = new Cell();
-    cell.indexOfX = 2;
+    cell.indexOfX = this.gameBoard ? Math.floor(Math.random() * this.gameBoard.lengthOfX) : 2;
     cell.indexOfY = 0;
     cell.enabled = true;
     cell.name = p.metadata.name;
