@@ -45,32 +45,8 @@ export class BoardComponent implements OnInit {
     // Retrieve full list of pods from proxy.
     // Step 2. Handle + / - events
     // Synchronize pod cache state with added / deleted events.
-    this.proxyService.getPods().subscribe(podList => {
-      if (!podList) {
-        return;
-      }
-      this.pods = this.shuffle(podList.items);
-      this.proxyService.getAddedPod().subscribe(pod => {
-        if (!pod) {
-          return;
-        }
-        if (this.pods.some(p => p.metadata.name === pod.metadata.name)) {
-          // If there is existing pod matches, pushing does not happen.
-          return;
-        }
-        this.pods.push(pod);
-      });
-      this.proxyService.getDeletedPod().subscribe(pod => {
-        if (!pod) {
-          return;
-        }
-        if (!this.pods.some(p => p.metadata.name === pod.metadata.name)) {
-          // If deleted pod does not hit the cache, deletion does not happen.
-          return;
-        }
-        this.pods = this.pods.filter(p => p.metadata.name !== pod.metadata.name);
-      });
-    });
+    this.loadPods();
+    
 
     this.enabled = true;
     this.gameBoard = new GameBoard();
@@ -98,6 +74,35 @@ export class BoardComponent implements OnInit {
     });
   }
 
+  private loadPods() {
+    this.proxyService.getPods().subscribe(podList => {
+      if (!podList) {
+        return;
+      }
+      this.pods = this.shuffle(podList.items);
+      this.proxyService.getAddedPod().subscribe(pod => {
+        if (!pod) {
+          return;
+        }
+        if (this.pods.some(p => p.metadata.name === pod.metadata.name)) {
+          // If there is existing pod matches, pushing does not happen.
+          return;
+        }
+        this.pods.push(pod);
+      });
+      this.proxyService.getDeletedPod().subscribe(pod => {
+        if (!pod) {
+          return;
+        }
+        if (!this.pods.some(p => p.metadata.name === pod.metadata.name)) {
+          // If deleted pod does not hit the cache, deletion does not happen.
+          return;
+        }
+        this.pods = this.pods.filter(p => p.metadata.name !== pod.metadata.name);
+      });
+    });
+  }
+
   spawn() {
     if (this.cells.some(c => c.enabled)) {
       // There is already active cell.
@@ -105,6 +110,7 @@ export class BoardComponent implements OnInit {
     }
     const p = this.pods.shift();
     if (!p) {
+      this.loadPods();
       return;
     }
     const cell = new Cell();
