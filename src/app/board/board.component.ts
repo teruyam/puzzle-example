@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { V1Pod } from '@kubernetes/client-node';
+import { ProxyService } from '../proxy.service';
+import { UserEntry } from '../user-entry';
+import { UserEntryService } from '../user-entry.service';
+import { ClrLoadingState } from '@clr/angular';
 
 @Component({
   selector: 'app-board',
@@ -7,21 +12,48 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BoardComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private proxyService: ProxyService,
+    private userEntryService: UserEntryService,
+  ) { }
 
-  width = 800;
-  height = 800;
+  width = 400;
+  height = 560;
   visualCells: VisualCell[] = [];
   cells: Cell[] = [];
   gameBoard: GameBoard;
   enabled: boolean;
+  pods: V1Pod[] = [];
+  score = 0;
+  scorePerCharacter = 100;
+  scoreTiers = [500000, 100000, 50000, 10000, 5000];
+  username = '';
+  userEntryState = ClrLoadingState.DEFAULT;
+  hasCompletedEntry = false;
+
+  shuffle(pods: V1Pod[]) {
+    for (let i = 0; i < pods.length; i++) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pods[i], pods[j]] = [pods[j], pods[i]];
+    }
+    return pods;
+  }
 
   ngOnInit() {
+    // Pod Synchronization.
+    // Step 1. Initialization
+    // Retrieve full list of pods from proxy.
+    // Step 2. Handle + / - events
+    // Synchronize pod cache state with added / deleted events.
+    this.loadPods();
+    
+
     this.enabled = true;
     this.gameBoard = new GameBoard();
-    this.gameBoard.lengthOfX = 7;
-    this.gameBoard.lengthOfY = 10;
+    this.gameBoard.lengthOfX = 5;
+    this.gameBoard.lengthOfY = 7;
 
+    // Game Clock
     setInterval(() => {
       if (!this.enabled) {
         return;
@@ -30,6 +62,7 @@ export class BoardComponent implements OnInit {
       this.spawn();
       this.move(0, 1);
     }, 1000);
+
     document.addEventListener('keydown', ev => {
       const x = ['ArrowLeft', 'a'].some(k => k === ev.key) ? -1 :
         ['ArrowRight', 'd'].some(k => k === ev.key) ? 1 : 0;
@@ -41,16 +74,55 @@ export class BoardComponent implements OnInit {
     });
   }
 
+  private loadPods() {
+    this.cells = [];
+    this.proxyService.getPods().subscribe(podList => {
+      if (!podList) {
+        return;
+      }
+      this.pods = this.shuffle(podList.items);
+      this.proxyService.getAddedPod().subscribe(pod => {
+        if (!pod) {
+          return;
+        }
+        if (this.pods.some(p => p.metadata.name === pod.metadata.name)) {
+          // If there is existing pod matches, pushing does not happen.
+          return;
+        }
+        this.pods.push(pod);
+      });
+      this.proxyService.getDeletedPod().subscribe(pod => {
+        if (!pod) {
+          return;
+        }
+        if (!this.pods.some(p => p.metadata.name === pod.metadata.name)) {
+          // If deleted pod does not hit the cache, deletion does not happen.
+          return;
+        }
+        this.pods = this.pods.filter(p => p.metadata.name !== pod.metadata.name);
+      });
+    });
+  }
+
   spawn() {
     if (this.cells.some(c => c.enabled)) {
       // There is already active cell.
       return;
     }
-    const c = new Cell();
-    c.indexOfX = 4;
-    c.indexOfY = 0;
-    c.enabled = true;
-    this.cells.push(c);
+    const p = this.pods.shift();
+    if (!p) {
+      this.loadPods();
+      return;
+    }
+    const cell = new Cell();
+    cell.indexOfX = this.gameBoard ? Math.floor(Math.random() * this.gameBoard.lengthOfX) : 2;
+    cell.indexOfY = 0;
+    cell.enabled = true;
+    cell.name = p.metadata.name;
+    if (p.metadata.labels.app) {
+      cell.label = p.metadata.labels.app;
+    }
+    this.cells.push(cell);
   }
 
   reset() {
@@ -99,7 +171,10 @@ export class BoardComponent implements OnInit {
     // Lose if disabled on top.
     this.enabled = target.indexOfY !== 0;
     // Clear line and Pull all above the line.
-    if (this.cells.filter(c => c.indexOfY === target.indexOfY).length === this.gameBoard.lengthOfX) {
+    const disabledCells = this.cells.filter(c => c.indexOfY === target.indexOfY);
+    if (disabledCells.length === this.gameBoard.lengthOfX) {
+      this.calculateScore(disabledCells);
+      this.deletePods(disabledCells.map(c => c.name));
       this.cells = this.cells.filter(c => c.indexOfY !== target.indexOfY)
         .map(c => {
           const n = c;
@@ -112,10 +187,45 @@ export class BoardComponent implements OnInit {
     this.render();
   }
 
+  calculateScore(cells: Cell[]) {
+    this.score += cells.map(c => c.name.length).reduce((p, c) => p + c) * this.scorePerCharacter;
+  }
+
+  submitScore() {
+    const userEntry = new UserEntry();
+    userEntry.name = this.username;
+    userEntry.score = this.score;
+    this.userEntryState = ClrLoadingState.LOADING;
+    this.userEntryService.postUserEntry(userEntry)
+      .subscribe(
+        ue => {
+          this.userEntryState = ClrLoadingState.SUCCESS;
+          this.hasCompletedEntry = true;
+          console.log('User Entry succeeded!');
+        },
+        e => {
+          this.userEntryState = ClrLoadingState.ERROR;
+          console.log('User Entry failed', e);
+        });
+  }
+
+  deletePods(names: string[]) {
+    if (!names) {
+      console.log('Unable to delete pods with name:', names);
+    }
+    this.proxyService.deletePods(names);
+  }
+
   render() {
     const vcf = new VisualCellFactory();
     this.visualCells = this.cells.map(c => vcf.create(c));
   }
+
+  pushToTop(pod: V1Pod) {
+    this.pods = this.pods.filter(p => p.metadata.name !== pod.metadata.name);
+    this.pods.unshift(pod);
+  }
+
 }
 
 class GameBoard {
@@ -127,6 +237,8 @@ class Cell {
   indexOfX: number;
   indexOfY: number;
   enabled: boolean;
+  name: string;
+  label: string;
 }
 
 class VisualCell {
@@ -135,6 +247,8 @@ class VisualCell {
   width: number;
   height: number;
   enabled: boolean;
+  name: string;
+  label: string;
 }
 
 class VisualCellFactory {
@@ -150,6 +264,13 @@ class VisualCellFactory {
     vc.width = this.width;
     vc.height = this.height;
     vc.enabled = cell.enabled;
+    vc.name = cell.name;
+    vc.label = cell.label;
     return vc;
   }
+}
+
+class LogItem {
+  date: Date;
+  message: string;
 }

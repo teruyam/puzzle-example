@@ -1,0 +1,51 @@
+<app-ranking-list [userEntries]="aggregationStatus && aggregationStatus.userEntries"></app-ranking-list>
+<div class="clr-row">
+    <div class="clr-col-6">
+        <div class="card">
+            <div class="card-header">
+                API ゲートウェイ <app-status-indicator [loading]="loading" [active]="!hasError"></app-status-indicator>
+            </div>
+            <div class="card-block">
+                <div *ngIf="loading" class="progress top loop">
+                    <progress></progress>
+                </div>
+                <h4 class="card-title"><span class="label dotnet-vmw-api-gateway">dotnet-vmw-api-gateway</span></h4>
+                <p class="card-text">API
+                    ゲートウェイはランキングやライセンスサービスなどの他のサンプルアプリケーションへの統合されたアクセスを提供します。
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="clr-col-6">
+        <div class="card">
+            <div class="card-header">
+                ランキング <app-status-indicator [loading]="loading"
+                    [active]="!hasError && (aggregationStatus && aggregationStatus.userEntries && aggregationStatus.userEntries.length > 0)">
+                </app-status-indicator>
+            </div>
+            <div class="card-block">
+                <div *ngIf="loading" class="progress top loop">
+                    <progress></progress>
+                </div>
+                <h4 class="card-title"><span class="label java-vmw-ranking-api">java-vmw-ranking-api</span></h4>
+                <p class="card-text">パズルゲームのスコアを記録するデータベースへアクセスするためのREST APIを提供します。</p>
+            </div>
+        </div>
+    </div>
+    <div class="clr-col-6">
+        <div class="card">
+            <div class="card-header">
+                ライセンスサービス <app-status-indicator [loading]="loading"
+                    [active]="!hasError && (aggregationStatus && aggregationStatus.licenseStatus && aggregationStatus.licenseStatus.enabled)">
+                </app-status-indicator>
+            </div>
+            <div class="card-block">
+                <div *ngIf="loading" class="progress top loop">
+                    <progress></progress>
+                </div>
+                <h4 class="card-title"><span class="label go-vmw-license-status">go-vmw-license-status</span></h4>
+                <p class="card-text">ライセンスサービスはライセンスが有効か確認するための機能を提供します。</p>
+            </div>
+        </div>
+    </div>
+</div>

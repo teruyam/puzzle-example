@@ -1,16 +1,52 @@
 <clr-modal [(clrModalOpen)]="!enabled" [clrModalClosable]="false" [clrModalStaticBackdrop]="false"
     [clrModalSize]="'xl'">
-    <h3 class="modal-title">THE END</h3>
+    <h3 class="modal-title">{{score|number:'5.0-0'}} 点</h3>
     <div class="modal-body">
-        <p>Thank you for playing!</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="reset()">はじめから</button>
+        <p>プレイしていただきありがとうございます。VMware Cloud Native Dayの思い出にランキングへ名前を刻みませんか。</p>
+        <form clrForm (submit)="submitScore()">
+            <clr-input-container>
+                <label>ニックネーム</label>
+                <input clrInput type="text" [(ngModel)]="username" name="example" placeholder="（例）パット・ゲルシンガー"
+                    style="width: 300px" [disabled]="hasCompletedEntry" />
+            </clr-input-container>
+            <button [clrLoading]="userEntryState" type="submit" class="btn btn-success-outline" (submit)="submitScore()"
+                [disabled]="hasCompletedEntry">登録</button>
+        </form>
     </div>
 </clr-modal>
-
-<svg [attr.width]="width" [attr.height]="height">
-    <rect *ngFor="let c of visualCells" [attr.x]="c.x" [attr.y]="c.y" [attr.width]="c.width" [attr.height]="c.height"
-        rx="8" ry="8" [class.enabled]="c.enabled">
-    </rect>
-</svg>
+<div class="clr-row">
+    <div class="clr-col-auto">
+        <h2>
+            <clr-icon *ngFor="let tier of scoreTiers" shape="star"
+                [ngClass]="[score > tier ? 'is-solid': '','is-warning'] " style="width: 36px; height: 36px;"></clr-icon>
+            {{score|number:'5.0-0'}}
+        </h2>
+        <svg [attr.width]="width" [attr.height]="height">
+            <rect *ngFor="let c of visualCells" [attr.x]="c.x" [attr.y]="c.y" [attr.width]="c.width"
+                [attr.height]="c.height" rx="8" ry="8" [ngClass]="c.label ? c.label : 'default'">
+            </rect>
+        </svg>
+    </div>
+    <div class="clr-col">
+        <table class="table table-compact" *ngIf="pods">
+            <thead>
+                <tr>
+                    <th class="left">Pod名</th>
+                    <th class="left">ステータス</th>
+                    <th class="left">ラベル</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let i of pods">
+                    <td class="left"><button (click)="pushToTop(i)" type="button" class="btn btn-icon btn-link btn-sm"
+                            aria-label="arrow" style="padding: 0;margin: 0;">
+                            <clr-icon shape="arrow"></clr-icon>
+                        </button>{{i.metadata.name}}</td>
+                    <td class="left">{{i.status.phase}}</td>
+                    <td class="left">
+                        <span [ngClass]="['label', i.metadata.labels['app']]">{{i.metadata.labels['app']}}</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

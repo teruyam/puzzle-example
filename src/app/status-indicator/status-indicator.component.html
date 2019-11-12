@@ -1,0 +1,12 @@
+<span *ngIf="loading else loadedBlock" class="spinner spinner-sm">
+    Loading...
+</span>
+<ng-template #loadedBlock>
+    <ng-template *ngIf="active; then activeBlock; else inactiveBlock"></ng-template>
+    <ng-template #activeBlock>
+        <clr-icon shape="success-standard" class="is-success"></clr-icon>
+    </ng-template>
+    <ng-template #inactiveBlock>
+        <clr-icon shape="error-standard" class="is-error"></clr-icon>
+    </ng-template>
+</ng-template>
